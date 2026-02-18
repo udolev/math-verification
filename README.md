@@ -23,7 +23,7 @@ uv run python evaluate.py --model <hf-model-path> --seed 42
 | Flag | Description |
 |------|-------------|
 | `--greedy` | Greedy decoding instead of default sampling |
-| `--no-thinking` | Disable thinking mode (for reasoning models) |
+| `--no-thinking` | Disable thinking mode (for hybrid reasoning models like Qwen3) |
 | `--tp N` | Tensor parallel size |
 | `--gpus 0,1,...` | Comma-separated GPU IDs |
 | `--output results.json` | Save full results to JSON |
