@@ -90,12 +90,14 @@ def run_inference(
     messages: list[list[dict]],
     sampling_params: SamplingParams,
     chat_template_kwargs: dict | None = None,
-) -> list[str]:
+) -> tuple[list[str], list[str]]:
     kwargs = {}
     if chat_template_kwargs:
         kwargs["chat_template_kwargs"] = chat_template_kwargs
     outputs = llm.chat(messages, sampling_params, **kwargs)
-    return [o.outputs[0].text for o in outputs]
+    texts = [o.outputs[0].text for o in outputs]
+    stop_reasons = [o.outputs[0].finish_reason or "" for o in outputs]
+    return texts, stop_reasons
 
 
 def evaluate_dataset(
@@ -113,13 +115,13 @@ def evaluate_dataset(
 
     sampling_params = SamplingParams(**base_params, max_tokens=config.max_tokens)
     messages = build_messages(questions)
-    model_outputs = run_inference(llm, messages, sampling_params, chat_template_kwargs)
+    model_outputs, stop_reasons = run_inference(llm, messages, sampling_params, chat_template_kwargs)
 
     has_boxed = 0
     strict_correct = 0
     flex_correct = 0
     examples = []
-    for question, model_output, gold_raw in zip(questions, model_outputs, gold_raws):
+    for question, model_output, gold_raw, stop_reason in zip(questions, model_outputs, gold_raws, stop_reasons):
         gold_answer = extract_gold_answer(gold_raw, config.name)
         flex_result = verify_answer(model_output, gold_answer, config.name)
         strict_result = verify_answer(model_output, gold_answer, config.name, strict=True)
@@ -133,6 +135,7 @@ def evaluate_dataset(
             "question": question,
             "gold_answer": gold_answer,
             "model_output": model_output,
+            "stop_reason": stop_reason,
             "extracted": flex_result["extracted"],
             "has_boxed": flex_result["has_boxed"],
             "strict_correct": strict_result["correct"],
@@ -209,6 +212,7 @@ def main() -> None:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus
     llm = LLM(model=args.model, seed=args.seed, tensor_parallel_size=args.tp)
 
+    # Sampling params follow Qwen model card recommendations (https://huggingface.co/Qwen/Qwen3-1.7B)
     if args.greedy:
         base_params = dict(temperature=0, top_p=1.0, seed=args.seed)
     elif args.no_thinking:

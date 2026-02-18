@@ -35,5 +35,5 @@ from verify import extract_gold_answer, verify_answer
 
 gold = extract_gold_answer("#### 1,234", "gsm8k")
 result = verify_answer(model_output, gold, "gsm8k")
-# {"correct": bool, "has_boxed": bool, "extracted": str | None}
+# {"correct": bool, "has_boxed": bool, "extracted": str | None, "stop_reason": "stop" | "length"}
 ```
