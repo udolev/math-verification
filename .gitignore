@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# log files
+*.log
+
+# Results and experiment outputs
+*.json
+
+# Documentation / notes (not for repo)
+*.md
+!README.md
+
+# uv project default entrypoint
+main.py
+
+# Cloned library source
+Math-Verify/
+
+# Tests
+tests/
+
+# Project-specific notes
+prompt.md
