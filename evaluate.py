@@ -53,7 +53,7 @@ DATASETS = [
     DatasetConfig("aime_2024", "HuggingFaceH4/aime_2024", None, "train", "problem", "answer", None, 38912),
     DatasetConfig("aime_2025", "MathArena/aime_2025", None, "train", "problem", "answer", None, 38912),
     DatasetConfig("aime_2026", "MathArena/aime_2026", None, "train", "problem", "answer", None, 38912),
-    DatasetConfig("dapo", "ftajwar/deduplicated_dapo_dataset", None, "train", "prompt", "answer", 100, 32768),
+    DatasetConfig("dapo", "open-r1/DAPO-Math-17k-Processed", "en", "train", "prompt", "solution", 100, 32768),
 ]
 
 
